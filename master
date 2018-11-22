@@ -1,0 +1,5 @@
+192.168.25.100
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/cluster_augusto
+ssh 13-10665.usb@192.168.25.100

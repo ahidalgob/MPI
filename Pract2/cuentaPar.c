@@ -40,7 +40,7 @@ void esclavo(void) {
 	// Crear el arreglo para los elementos
 	int *vector;
 	assert((vector =(int *)malloc(sizeof(int)*(n)))!=NULL);
-	MPI_Recv(&vector, n, MPI_INT, 0, 1, MPI_COMM_WORLD, &estado);
+	MPI_Recv(vector, n, MPI_INT, 0, 1, MPI_COMM_WORLD, &estado);
 
 	/*MPI_Get_count(&estado, MPI_INT, &count);*/
 	/*printf("count %d\n",count);*/
@@ -51,8 +51,7 @@ void esclavo(void) {
 	// Enviar resultado
 	MPI_Send(&result, 1, MPI_INT, 0, 2, MPI_COMM_WORLD);
 
-	free(vector);
-	printf("todo bien esclavo\n");
+	/*free(vector);*/
 }
 //­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­
 void maestro (int NumProcesos, int Cardinalidad) {
@@ -69,7 +68,7 @@ void maestro (int NumProcesos, int Cardinalidad) {
 
 	// Repartir trabajo
 	// Mandar a cada uno cuantos elementos son, despues enviarle el arreglo
-	// El proceso i trabajara [i/n * Card, (i+1)/n * Card)
+	// El proceso i trabajara [i*Card/n, (i+1)*Card/n)
 	for(i=1; i<NumProcesos; i++){
 		int ini = i * Cardinalidad / NumProcesos,
 			fin = (i+1) * Cardinalidad / NumProcesos;
@@ -98,8 +97,7 @@ void maestro (int NumProcesos, int Cardinalidad) {
 			NUM_BUSCADO, totalNumVeces);
 	printf ("tiempo total = %ld:%3ld\n", t.tv_sec, t.tv_usec/1000);
 
-	free(vector);
-	printf("todo bien master\n");
+	/*free(vector);*/
 }
 //­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­
 int main( int argc, char *argv[] ) {
@@ -117,7 +115,6 @@ int main( int argc, char *argv[] ) {
 	if (yo == 0) maestro(numProcesos,laCardinalidad);
 	else esclavo();
 
-	sleep(1);
 	MPI_Finalize();
 	return 0;
 }
